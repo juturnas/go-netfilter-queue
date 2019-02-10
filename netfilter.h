@@ -32,6 +32,7 @@
 typedef struct {
     uint verdict;
     uint length;
+    uint mark;
     unsigned char *data;
 } verdictContainer;
 
@@ -53,7 +54,12 @@ static int nf_callback(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct n
 
     go_callback(id, buffer, ret, idx, &vc);
 
-    return nfq_set_verdict(qh, id, vc.verdict, vc.length, vc.data);
+    if (vc.verdict == NF_REPEAT) {
+    	return nfq_set_verdict2(qh, id, vc.verdict, vc.mark, vc.length, vc.data);
+
+    } else {
+    	return nfq_set_verdict(qh, id, vc.verdict, vc.length, vc.data);
+    }
 }
 
 static inline struct nfq_q_handle* CreateQueue(struct nfq_handle *h, u_int16_t queue, u_int32_t idx)
