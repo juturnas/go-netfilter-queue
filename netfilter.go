@@ -45,13 +45,16 @@ import (
 //Verdict for a packet
 type Verdict C.uint
 
+//Mark for a packet
+type Mark C.uint
+
 //Container for a verdict and (possibly) a modified packet (C side)
 type VerdictContainerC C.verdictContainer
 
 //Container for a verdict and (possibly) a modified packet (Go side)
 type VerdictContainer struct {
 	Verdict Verdict
-	Mark    C.uint
+	Mark    Mark
 	Packet  []byte
 }
 
@@ -63,6 +66,11 @@ type NFPacket struct {
 //Set the verdict for the packet
 func (p *NFPacket) SetVerdict(v Verdict) {
 	p.verdictChannel <- VerdictContainer{Verdict: v, Packet: nil}
+}
+
+//Set the verdict for the packet
+func (p *NFPacket) SetVerdict2(v Verdict, m Mark) {
+	p.verdictChannel <- VerdictContainer{Verdict: v, Mark: m, Packet: nil}
 }
 
 //Set the verdict for the packet (in the case of requeue)
