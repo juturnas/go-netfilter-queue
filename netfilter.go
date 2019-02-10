@@ -223,6 +223,8 @@ func go_callback(queueId C.int, data *C.uchar, length C.int, idx uint32, vc *Ver
 		case v := <-p.verdictChannel:
 			if v.Packet == nil {
 				(*vc).verdict = C.uint(v.Verdict)
+				(*vc).mark = C.uint(v.Mark)
+
 				(*vc).data = nil
 				(*vc).length = 0
 			} else {
